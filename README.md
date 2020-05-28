@@ -57,3 +57,8 @@
    ```
    Then print `Shift-Enter`.
 1. This too should output the ISCE2 license information.
+1. To shut down, press `Control-C` in the terminal window where you ran `docker-compose up`.
+1. Cleanup after yourself by running:
+   ```
+   docker-compose down
+   ```
