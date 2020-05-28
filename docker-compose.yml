@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  theia:
+    hostname: theia
+    container_name: theia
+    image: theiaide/theia-full:next
+    restart: always
+    init: true
+    ports:
+      - "3000:3000"
+    volumes:
+      # "cached" is a MacOS specific option
+      - "${PROJECT}:/home/project:cached"
+      - "./settings.json:/tmp/settings.json:cached"
+      - "./theia_entrypoint.sh:/home/theia/theia_entrypoint.sh:cached"
+    depends_on:
+      - jupyter
+    entrypoint: /home/theia/theia_entrypoint.sh
+  jupyter:
+    hostname: jupyter
+    container_name: jupyter
+    image: hysds/isce2:v2.3.3-es1
+    ports:
+      - "8888:8888"
+    volumes:
+      # "cached" is a MacOS specific option
+      - "${PROJECT}:/home/ops/project:cached"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes    
+    command: bash -c 'source /opt/isce2/isce_env.sh
+      && pip install jupyterlab
+      && export PATH=$$HOME/.local/bin:$$PATH
+      && cd /home/ops/project
+      && jupyter lab --ip=0.0.0.0'
+      #&& jupyter lab --ip=0.0.0.0 --NotebookApp.token="" --NotebookApp.password=""'
